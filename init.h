@@ -4,6 +4,7 @@
 #include <map>
 #include <string>
 #include <functional>
+#include <stack>
 
 #include "variables.h"
 
@@ -255,13 +256,7 @@ struct Init
 			std::string operand2 = code[line][3];
 			operand2.pop_back(); 
 			bool flag =  cmp[operation](operand1, operand2, variables);
-			if (!flag) {
-				while (code[line][0] != "}") {
-					++line;
-					std::cout << "the line is skiped " << line << std::endl;
-				}
-			}
-			return false;
+			return flag;
 		} },
 		{"while", [this](std::vector<std::vector<std::string>>& code, Variables& variables, size_t& line) -> bool {
 			if (code[line].size() < 5) {	
@@ -281,12 +276,6 @@ struct Init
 			std::string operand2 = code[line][3];
 			operand2.pop_back(); 
 			bool flag =  cmp[operation](operand1, operand2, variables);
-			if (!flag) {
-				while (code[line][0] != "}") {
-					++line;
-					std::cout << line <<" line id skiped in while" << std::endl;
-				}
-			}
 			return flag;
 	} }
 	};

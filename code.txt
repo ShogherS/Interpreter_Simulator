@@ -4,6 +4,9 @@ int main() {
       int num = 10;
       char ch = 'A';
       bool flag = true; //  ||  1 or 0
+	if (ch == 'A') {
+		++ch;
+	}
       string str = "hello world sunshine<3";
       int i = 0;
       int j = 11;
@@ -18,10 +21,9 @@ int main() {
       i = 0;
       j  = 5;
       while (i < j) {
-
-	if (i == 4) {
-	   break;
-}
+		if (i == 4) {
+			break;
+		}
            std::cout << arr[i];
            ++i; // i += 1
       }
@@ -33,7 +35,6 @@ int main() {
           ++i;
       }
       num += 100;
-      num = num + 99;
       if (num > 0) {
 	std::cout << num << std::endl;
       }

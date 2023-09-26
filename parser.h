@@ -40,9 +40,10 @@ struct Parser
 	//variables
 	Variables variables;
 	Init init;
+	bool break_flag;
 };
 
-Parser::Parser(std::vector<std::string>& d) : data{d} { code.resize(data.size() - 2); }
+Parser::Parser(std::vector<std::string>& d) : data{d}, break_flag{false} { code.resize(data.size() - 2); }
 
 void Parser::pars()
 {
@@ -86,6 +87,11 @@ bool Parser::variableParser(size_t& line)
 	if (current[1].back() == ']') {
 	} else if (current[0] == "bool") {
 		checkRedefinition(line);
+		std::string type2 = isDecleared(line, 3);
+//		if (type2 == "bool") {
+			
+
+
 		if (current[3] != "true" && current[3] != "false") {
 			throw std::invalid_argument("Invalid value in line " + std::to_string(line) + ", true or false is excpected.");
 		}
@@ -133,29 +139,61 @@ bool Parser::variableParser(size_t& line)
 	
 	} else if (init.ifwh.contains(current[0])) {
 		bool flag = init.ifwh[current[0]](code,variables, line);
-		std::cout << "The flag is : "<< flag << " In line " << line << std::endl;
-		while (flag) {
-			std::cout << "while flag is set "<< line << std::endl;
-			size_t while_line = line;
-			while (code[++line][0] != "}") {
-				std::cout << "The code is excexuted: " << line << std::endl;
-				variableParser(line);
+		std::cout << "The flag is : "<< flag << " in line " << line << std::endl;
+		std::stack<char> curly;
+		size_t fline = line;
+		for (; fline < code.size(); ++fline) {
+			for (auto& word : code[fline]) {
+				for (const char c : word) {
+					if (c == '}') {
+						curly.pop();
+					} else if (c == '{') {
+						curly.push('{');
+					} 
+				}
 			}
-			line = while_line;
+			if (curly.empty()) {
+				std::cout <<"the end of condition statement is " << fline << std::endl;
+				break;
+			}
+		}
+		
+		size_t sline = line;
+		while (flag && !break_flag) {
+			std::cout << line << std::endl;
+			while (line < fline) {
+				++line;
+				if (code[line][0] == "break") {
+					break_flag = true;
+					flag = false;
+					break;
+				}
+				variableParser(line);	
+			}
+			if (break_flag) {
+					std::cout << "break happend" << std::endl;
+				flag = false;
+				break;
+			} 
+			if (current[0] == "if") break;
+			line = sline;
 			flag = init.ifwh["while"](code,variables,line);
+		}
+		if (!flag) {
+			line = fline;
 		}
 	} else if (current[0] == "{") {
 	
 	} else if (current[0] == "}") {
 	
 	} else if (current[0] == "return") {
-		
+		line = code.size();	
 	} else if (current[0] == "std::cout") {
 	
 	} else if (current[0] == "std::cin") {
 	
 	} else if (current[0] == "break"){
-	
+		
 	} else {
 		std::string varType = isDeclared(line, 0);
 		if (varType == "NO") {	
