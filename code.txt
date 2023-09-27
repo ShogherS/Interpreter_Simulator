@@ -4,6 +4,7 @@ int main() {
       int num = 10;
       char ch = 'A';
       bool flag = true; //  ||  1 or 0
+	bool mlag = flag;
 	if (ch == 'A') {
 		++ch;
 	}
