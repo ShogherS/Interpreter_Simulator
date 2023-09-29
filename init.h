@@ -10,7 +10,7 @@
 
 struct Init
 {
-		std::map<std::string, std::function<void(std::vector<std::string>&, std::string&, Variables&)>> operations {
+	std::map<std::string, std::function<void(std::vector<std::string>&, std::string&, Variables&)>> operations {
 		 {"=", [](std::vector<std::string>& line, std::string& type, Variables& variables) {
 			size_t i = 2;
 			if (type == "bool") {
@@ -58,7 +58,7 @@ struct Init
 			}
 			++i;
 			if (i >= line.size() || line[i] != ";") {
-					throw std::invalid_argument("Unknown symbole \"" + line[i]+ "\".");                         
+				throw std::invalid_argument("Unknown symbole \"" + line[i]+ "\".");                         
 			}
 	}},
 	{"+=", [](std::vector<std::string>& line, std::string& type, Variables& variables) {
@@ -87,7 +87,7 @@ struct Init
 		}
 		++i;
 		if (i >= line.size() || line[i] != ";") {
-				throw std::invalid_argument("Unknown symbole \"" + line[i]+ "\".");                         
+			throw std::invalid_argument("Unknown symbole \"" + line[i]+ "\".");                         
 		}
 	}},
 	{"-=", [](std::vector<std::string>& line, std::string& type, Variables& variables) {
@@ -147,7 +147,6 @@ struct Init
 	};
 	std::map<std::string, std::function<bool(std::string&, std::string&, Variables&)>> cmp {
 	{"==", [this](std::string& argument1, std::string& argument2, Variables& variables) -> bool {
-	// while (a < b) {       while (a < 20) {   while (40 > 34) {			
 		std::string type = isDeclared(variables, argument1);
 		std::string type2 = isDeclared(variables, argument2);
 		if (type2 != "NO") {
@@ -193,24 +192,66 @@ struct Init
 			return value == argument2 ? true : false;
 			}
 		}
-		throw std::invalid_argument("THF ==");
+		throw std::invalid_argument("Unknown argument.");
 		return false;
 	} },
-	{"<", [this](std::string& argument1, std::string& argument2, Variables& variables) -> bool {
+	{"!=", [this](std::string& argument1, std::string& argument2, Variables& variables) -> bool {
 		std::string type = isDeclared(variables, argument1);
 		std::string type2 = isDeclared(variables, argument2);
-/*
 		if (type2 != "NO") {
 			std::string tmp = argument2;
 			argument2 = argument1;
 			argument1 = tmp;
 		}
-*/		if (type == "bool") {
+		if (type == "bool") {
+			bool value = variables.booleans[argument1].first;
+			if (argument2 == "true") {
+				return value != true ? true : false;
+			} else if ( argument2 == "false") {
+				return value != false ? true : false;
+			} else if (type2 == "bool") {
+				return value != variables.booleans[argument2].first ? true : false;
+			} else {
+				  throw std::invalid_argument("Invalid argument \"" + argument2  + "\".");    
+			}                                             
+		} else if (type == "int") {
+			int& value = variables.integers[argument1].first;
+			if (type2 == "int") {
+				return value != variables.integers[argument2].first ? true : false;
+			} else {
+				return value != std::stoi(argument2) ? true : false;
+			}	
+		} else if (type == "char") {
+			char& value = variables.characters[argument1].first;
+			if (type2 == "char") {
+				return value != variables.characters[argument2].first ? true : false;
+			} else if (argument2.size() == 3 && argument2[0] == '\'' && argument2[2] == '\'' ) {
+				return value != argument2[1]? true : false;
+			} else {
+				  throw std::invalid_argument("Invalid argument \"" + argument2 + "\".");    
+			}                                             
+		} else if (type == "string") {
+			std::string& value = variables.strings[argument1].first;
+			if (type2 == "string") {
+				return value != variables.strings[argument2].first ? true : false;
+			} else {
+				if (argument2.front() !='\"' || argument2.back() != '\"') {
+					throw std::invalid_argument("Invalid value " + argument2 + ". A stirng literal is excpectrd.");	
+				}		
+			return value != argument2 ? true : false;
+			}
+		}
+		throw std::invalid_argument("Unknown argument.");
+		return false;
+	} },
+	{"<", [this](std::string& argument1, std::string& argument2, Variables& variables) -> bool {
+		std::string type = isDeclared(variables, argument1);
+		std::string type2 = isDeclared(variables, argument2);
+		if (type == "bool") {
 			throw std::invalid_argument("Invalid operation for boolean type.");
 		} else if (type == "int") {
 			int value = variables.integers[argument1].first;
 			if (type2 == "int") {
-				std::cout << value << " < " << variables.integers[argument2].first << std::endl;
 				return value < variables.integers[argument2].first ? true : false;
 			} else {
 				return value < std::stoi(argument2) ? true : false;
@@ -231,14 +272,36 @@ struct Init
 		return false;
 	} },
 	{">", [this](std::string& argument1, std::string& argument2, Variables& variables) -> bool {
-		
+		std::string type = isDeclared(variables, argument1);
+		std::string type2 = isDeclared(variables, argument2);
+		if (type == "bool") {
+			throw std::invalid_argument("Invalid operation for boolean type.");
+		} else if (type == "int") {
+			int value = variables.integers[argument1].first;
+			if (type2 == "int") {
+				return value < variables.integers[argument2].first ? true : false;
+			} else {
+				return value < std::stoi(argument2) ? true : false;
+			}	
+		} else if (type == "char") {
+			char value = variables.characters[argument1].first;
+			if (type2 == "char") {
+				return value < variables.characters[argument2].first ? true : false;
+			} else if (argument2.size() == 3 && argument2[0] == '\'' && argument2[2] == '\'' ) {
+				return value > argument2[1]? true : false;
+			} else {
+				  throw std::invalid_argument("Invalid argument \"" + argument2 + "\".");    
+			}                                             
+		} else if (type == "string") {
+			throw std::invalid_argument("Invalid operation for string type.");	
+		}
+		throw std::invalid_argument("Unknown argument.");
 		return false;
 	} } 
 	};
 
 	std::map<std::string, std::function<bool(std::vector<std::vector<std::string>>&, Variables&,  size_t&)>> ifwh {
 		{"if", [this](std::vector<std::vector<std::string>>& code, Variables& variables, size_t& line) -> bool {
-			// if (a > b) {
 			if (code[line].size() < 5) {	
 				throw std::invalid_argument("Some arguments arre missing in line " + std::to_string(line) + ".");
 			}
