@@ -34,7 +34,28 @@ Running the Program
 4. Run the program, providing the name of the text file containing your code as a command-line argument:
 Simulating Execution
 Once the program is running, it will load and parse the code step by step, simulating the execution. You will see output and error messages in the terminal, helping you understand how the code is being processed.
+Loader Class
 
+The Loader struct is responsible for loading code from a file into the program. It includes the following components:
+
+cpp
+Copy code
+struct Loader
+{
+    std::vector<std::string> code; // Vector to store lines of code from a file.
+
+    // Constructor that loads code from a file into the 'code' vector.
+    Loader(const std::string& filename);
+};
+Constructor Definition
+The Loader struct defines a constructor that loads code from a specified file into the code vector. Here's how it works:
+
+The constructor opens the file specified by filename for reading using std::ifstream.
+It checks if the file was successfully opened and throws a std::runtime_error if the opening fails.
+The constructor uses a temporary variable line to read each line of the file.
+It reads each line from the file and stores it in the code vector, ignoring empty lines.
+Finally, the constructor closes the file when done reading.
+This Loader struct is used to initialize the code vector with the content of the code file, which is then processed by the Parser class for step-by-step execution.
 Interpreting Error Messages
 If the program encounters errors in the code, it will provide detailed error messages, including the line number and the nature of the error. Use these messages to identify and fix issues in your code.
 
