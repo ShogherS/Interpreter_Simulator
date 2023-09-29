@@ -11,8 +11,10 @@
 struct Init
 {
 	std::map<std::string, std::function<void(std::vector<std::string>&, std::string&, Variables&)>> operations {
-		 {"=", [](std::vector<std::string>& line, std::string& type, Variables& variables) {
+		 {"=", // Lambda function for assignment
+			[](std::vector<std::string>& line, std::string& type, Variables& variables) {
 			size_t i = 2;
+		        // Check the variable type and perform the assignment accordingly
 			if (type == "bool") {
 				bool& value = variables.booleans[line[0]].first;
 				if (line[i] == "true") {
@@ -57,12 +59,15 @@ struct Init
 				}
 			}
 			++i;
+			// Check for the semicolon to complete the statement
 			if (i >= line.size() || line[i] != ";") {
 				throw std::invalid_argument("Unknown symbole \"" + line[i]+ "\".");                         
 			}
 	}},
-	{"+=", [](std::vector<std::string>& line, std::string& type, Variables& variables) {
+	{"+=",	// Lambda function for addition assignment
+		 [](std::vector<std::string>& line, std::string& type, Variables& variables) {
 		size_t i = 2;
+	        // Check the variable type and perform the addition assignment accordingly
 		if (type == "bool") {
 			throw std::invalid_argument("Invalid operation.  += for type bool.");                          
 		} else if (type == "int") {
@@ -78,7 +83,7 @@ struct Init
 			std::string& value = variables.strings[line[0]].first;
 			if (variables.strings.find(line[i]) != variables.strings.end()) {
 				value += variables.strings[line[i]].first;
-			} else {
+			} else {    // Check if line[2] is a valid string literal
 				if (line[2].front() !='\"' || line[2].back() != '\"') {
 					throw std::invalid_argument("Invalid value. A stirng literal is excpectrd.");	
 				}		
@@ -86,12 +91,17 @@ struct Init
 			value += line[2];
 		}
 		++i;
+	        // Check for the semicolon to complete the statement
+
 		if (i >= line.size() || line[i] != ";") {
 			throw std::invalid_argument("Unknown symbole \"" + line[i]+ "\".");                         
 		}
 	}},
-	{"-=", [](std::vector<std::string>& line, std::string& type, Variables& variables) {
+	{"-=",	// Lambda function for subtraction assignment
+		[](std::vector<std::string>& line, std::string& type, Variables& variables) {
 		size_t i = 2;
+		// Check the variable type and perform the subtraction assignment accordingly
+
 		if (type == "bool") {
 			throw std::invalid_argument("Invalid operation.  -= for type bool.");                          
 		} else if (type == "int") {
@@ -108,6 +118,7 @@ struct Init
 		} else if (type == "string") {
 		}
 		++i;
+		// Check for the semicolon to complete the statement
 		if (i >= line.size() || line[i] != ";") {
 				throw std::invalid_argument("Unknown symbole \"" + line[i]+ "\".");                         
 		}
