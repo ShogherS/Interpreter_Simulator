@@ -14,25 +14,21 @@ Usage
 
 1. The program rads the code from the text file. Here is the exsample of the code that the program can excecute:
 
-`int main() {`
-
-`	int i = 0;`
-
-`	int j = 5;`
-
-`	int arr[5] = {1,2,3,4,5,12,45,56};`
-
-`	if (i < j) {`
-
-`		if (i == 3) {`
-
-`			break;`
-`		}`
-`		std::cout << arr[i] << std::endl;`
-`		++i; // i += 1`
-`	}`
-`	return 0;`
-`}`
+```
+int main() {
+  int i = 0;
+	int j = 5;
+	int arr[5] = {1,2,3,4,5,12,45,56};
+	if (i < j) {
+		if (i == 3) {
+			break;
+		}
+		std::cout << arr[i] << std::endl;
+		++i; // i += 1
+	}
+	return 0;
+}
+```
 
 2. The next step is to download all files of the current repositry to your computer. 
    * loader.h
@@ -43,15 +39,16 @@ Usage
 
 3. The next step is to crete a .cpp file and include loader.h and parser.cpp files. Aftervards you need to creale an instance of Loader class, it has a constructor with a string as a parameter. Its main role is to load the text file that with the code and sawe it. Next the Parser clss steps in, it also has a constructor with a parameter and a method pars which compiles the ocde. And at last you can chek the status of all the delatred vairables in your code calling the print method.
 
-`#include "loader.h"`
-`#include "parser.cpp`
-`int main()`
-`{`
-`	Loader loader("code.txt");`
-`	Parser parser(loader.code);'
-`	parser.pars();`
-`}`
-
+```
+#include "loader.h"
+#include "parser.cpp
+int main()
+{
+	Loader loader("code.txt");
+	Parser parser(loader.code);
+	parser.pars();
+}
+```
 4. The final step is to compile tha code and run it in your computer.
 
 
