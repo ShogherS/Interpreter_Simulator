@@ -1,7 +1,7 @@
 # Interpreter_Simulator
 Interpretation Simulation Program
 
-##Overview
+## Overview
 
 This Interpretation Simulation Program is designed to simulate and interpret code written in a c++ language. It includes functions for parsing, executing, and simulating code, making it a powerful tool for understanding code behavior.
 
@@ -54,9 +54,13 @@ int main() {
 
 2. The next step is to download all files of the current repositry to your computer. Clone or download the program's source code to your local machine.
    * loader.h
+     
    * parser.h
+     
    * parser.cpp
+     
    * init.h
+     
    * variables.h
 
 3. The next step is to crete a .cpp file and include loader.h and parser.cpp files. Open a terminal or command prompt and navigate to the directory containing the program's source code. Aftervards you need to creale an instance of Loader class, it has a constructor with a string as a parameter. Its main role is to load the text file that with the code and sawe it. Next the Parser clss steps in, it also has a constructor with a parameter and a method pars which compiles the ocde. And at last you can chek the status of all the delatred vairables in your code calling the print method.
@@ -85,7 +89,7 @@ int main()
 *Parser struct
 *Loader struct
 
-> Loader Class
+### Loader Class
 
 The Loader struct is responsible for loading code from a file into the program. It includes the following components:
 
