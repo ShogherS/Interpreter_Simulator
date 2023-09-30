@@ -1,16 +1,38 @@
 # Interpreter_Simulator
 Interpretation Simulation Program
 
-Overview
+##Overview
 
 This Interpretation Simulation Program is designed to simulate and interpret code written in a c++ language. It includes functions for parsing, executing, and simulating code, making it a powerful tool for understanding code behavior.
 
-Introduction
+##Introduction
 
 The Interpreter Simulate Program is a C++ educational project designed to load and parse code from a text file, simulating an interpreter's step-by-step execution. This README provides detailed information on the program's functions and how to use it effectively.
 
+##Features
 
-Usage
+The Interpreter Simulate Program offers the following features:
+
+Code Loading: The program can load code from a text file, allowing you to analyze and simulate its execution.
+
+Step-by-Step Parsing: It parses the loaded code step by step, simulating an interpreter's execution, and checks for errors and issues during the process.
+
+Variable Declaration: The program detects and handles variable declarations for various data types, including bool, int, char, string, ans arrays of char and int.
+
+Operations: It supports various operations like =, +=, and -= for different data types.
+
+Array Support: The program can handle array declarations and operations, including element access and assignments.
+
+Conditional Statements: It can process conditional statements like if and while, simulating their execution based on given conditions.
+
+Output: The program can simulate basic output operations, including std::cout.
+
+Error Handling: It provides detailed error messages and validation checks for various aspects of the code, helping users identify and correct issues.
+
+
+##Usage
+How to Use
+To run the Interpreter Simulate Program, you need:
 
 1. The program rads the code from the text file. Here is the exsample of the code that the program can excecute:
 
@@ -30,14 +52,14 @@ int main() {
 }
 ```
 
-2. The next step is to download all files of the current repositry to your computer. 
+2. The next step is to download all files of the current repositry to your computer. Clone or download the program's source code to your local machine.
    * loader.h
    * parser.h
    * parser.cpp
    * init.h
    * variables.h
 
-3. The next step is to crete a .cpp file and include loader.h and parser.cpp files. Aftervards you need to creale an instance of Loader class, it has a constructor with a string as a parameter. Its main role is to load the text file that with the code and sawe it. Next the Parser clss steps in, it also has a constructor with a parameter and a method pars which compiles the ocde. And at last you can chek the status of all the delatred vairables in your code calling the print method.
+3. The next step is to crete a .cpp file and include loader.h and parser.cpp files. Open a terminal or command prompt and navigate to the directory containing the program's source code. Aftervards you need to creale an instance of Loader class, it has a constructor with a string as a parameter. Its main role is to load the text file that with the code and sawe it. Next the Parser clss steps in, it also has a constructor with a parameter and a method pars which compiles the ocde. And at last you can chek the status of all the delatred vairables in your code calling the print method.
 
 ```
 #include "loader.h"
@@ -49,38 +71,32 @@ int main()
 	parser.pars();
 }
 ```
-4. The final step is to compile tha code and run it in your computer.
+4. Compile the program using your C++ compiler.
+
+5. Run the program, providing the name of the text file containing your code as a command-line argument. Once the program is running, it will load and parse the code step by step, simulating the execution. You will see output and error messages in the terminal, helping you understand how the code is being processed.
 
 
-Features
 
-The Interpreter Simulate Program offers the following features:
+##Structure
 
-Code Loading: The program can load code from a text file, allowing you to analyze and simulate its execution.
-Step-by-Step Parsing: It parses the loaded code step by step, simulating an interpreter's execution, and checks for errors and issues during the process.
-Variable Declaration: The program detects and handles variable declarations for various data types, including bool, int, char, string, and more.
-Operations: It supports various operations like =, +=, and -= for different data types.
-Array Support: The program can handle array declarations and operations, including element access and assignments.
-Conditional Statements: It can process conditional statements like if and while, simulating their execution based on given conditions.
-Input/Output: The program can simulate basic input and output operations, including std::cin and std::cout.
-Error Handling: It provides detailed error messages and validation checks for various aspects of the code, helping users identify and correct issues.
-How to Use
-
-
-Structure
-Loader Class
+*Loader struct
+*Variagles struct
+*Init struct
+*Parser struct
+*Loader struct
 
 The Loader struct is responsible for loading code from a file into the program. It includes the following components:
 
 cpp
-Copy code
+```
 struct Loader
 {
-    `std::vector<std::string> code; // Vector to store lines of code from a file.
-
-    // Constructor that loads code from a file into the 'code' vector.
-    Loader(const std::string& filename);
+	std::vector<std::string> code;
+	// Vector to store lines of code from a file.
+	Loader(const std::string& filename);
+	// Constructor that loads code from a file into the 'code' vector.
 };
+```
 Constructor Definition
 The Loader struct defines a constructor that loads code from a specified file into the code vector. Here's how it works:
 
@@ -92,31 +108,10 @@ Finally, the constructor closes the file when done reading.
 This Loader struct is used to initialize the code vector with the content of the code file, which is then processed by the Parser class for step-by-step execution.
 
 
-Prerequisites
-To run the Interpreter Simulate Program, you need:
-
-A C++ compiler (e.g., g++) installed on your system.
-A text file containing the code you want to simulate.
-Running the Program
-1. Clone or download the program's source code to your local machine.
-2. Open a terminal or command prompt and navigate to the directory containing the program's source code.
-3. Compile the program using your C++ compiler. For example:
-4. Run the program, providing the name of the text file containing your code as a command-line argument:
-Simulating Execution
-Once the program is running, it will load and parse the code step by step, simulating the execution. You will see output and error messages in the terminal, helping you understand how the code is being processed.
 Loader Class
 
 The Loader struct is responsible for loading code from a file into the program. It includes the following components:
 
-cpp
-Copy code
-struct Loader
-{
-    std::vector<std::string> code; // Vector to store lines of code from a file.
-
-    // Constructor that loads code from a file into the 'code' vector.
-    Loader(const std::string& filename);
-};
 Constructor Definition
 The Loader struct defines a constructor that loads code from a specified file into the code vector. Here's how it works:
 
