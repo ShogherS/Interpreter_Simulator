@@ -89,7 +89,7 @@ int main()
 *Parser struct
 *Loader struct
 
-### Loader Class
+### Loader Struct
 
 The Loader struct is responsible for loading code from a file into the program. It includes the following components:
 
@@ -115,6 +115,47 @@ Finally, the constructor closes the file when done reading.
 This Loader struct is used to initialize the code vector with the content of the code file, which is then processed by the Parser class for step-by-step execution.
 Interpreting Error Messages
 If the program encounters errors in the code, it will provide detailed error messages, including the line number and the nature of the error. Use these messages to identify and fix issues in your code.
+
+### Parser struct
+```
+struct Parser
+{
+    // Constructor that takes a reference to a vector of strings
+    Parser(std::vector<std::string>&);
+
+    // Member functions to parse and process code
+    bool hasMain(size_t);
+    void scopeParser(const char, const char, const size_t) const;
+    bool hasIostream();
+    bool variableParser(size_t&, Variables&);
+    bool variableTypeParser(size_t) const;
+    void commentParser(size_t);
+    void semicolonParser(size_t) const;
+    void parsCurlyBraces();
+    void pars();
+    void parsCout(const size_t);
+    std::string getValue(std::string&);
+
+    // Member functions for data processing and manipulation
+    void processData();
+    void removeSpace(size_t);
+    void trimString(std::string&);
+    void print() const;
+    std::string isDeclared(const std::string&);
+    void arrRhs(std::string&, std::string&, std::string&, const size_t, Variables&);
+    std::pair<std::string, int> arrNamePars(std::string&, Variables&);
+    void updateVars(Variables& newVars, Variables& variables);
+    void checkRedefinition(const size_t line) const;
+    void checkSemicolon(const size_t line) const;
+
+    // Member variables
+    std::vector<std::string>& data; // Reference to a vector of strings
+    std::vector<std::vector<std::string>> code; // 2D vector of strings
+    Variables variables; // An instance of the Variables struct
+    Init init; // An instance of the Init struct
+    bool break_flag; // Boolean flag
+};
+```
 
 ## Customizing the Program
 You can customize the program's behavior by modifying the code in the Parser class and the associated lambdas that handle various operations. Be sure to follow the program's code structure and comments for guidance.
