@@ -15,11 +15,17 @@ Usage
 1. The program rads the code from the text file. Here is the exsample of the code that the program can excecute:
 
 `int main() {`
+
 `	int i = 0;`
+
 `	int j = 5;`
+
 `	int arr[5] = {1,2,3,4,5,12,45,56};`
+
 `	if (i < j) {`
+
 `		if (i == 3) {`
+
 `			break;`
 `		}`
 `		std::cout << arr[i] << std::endl;`
