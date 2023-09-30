@@ -16,7 +16,7 @@ Usage
 
 ```
 int main() {
-  int i = 0;
+	int i = 0;
 	int j = 5;
 	int arr[5] = {1,2,3,4,5,12,45,56};
 	if (i < j) {
