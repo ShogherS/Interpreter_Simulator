@@ -5,11 +5,11 @@ Interpretation Simulation Program
 
 This Interpretation Simulation Program is designed to simulate and interpret code written in a c++ language. It includes functions for parsing, executing, and simulating code, making it a powerful tool for understanding code behavior.
 
-##Introduction
+## Introduction
 
 The Interpreter Simulate Program is a C++ educational project designed to load and parse code from a text file, simulating an interpreter's step-by-step execution. This README provides detailed information on the program's functions and how to use it effectively.
 
-##Features
+## Features
 
 The Interpreter Simulate Program offers the following features:
 
@@ -30,7 +30,7 @@ Output: The program can simulate basic output operations, including std::cout.
 Error Handling: It provides detailed error messages and validation checks for various aspects of the code, helping users identify and correct issues.
 
 
-##Usage
+## Usage
 How to Use
 To run the Interpreter Simulate Program, you need:
 
@@ -77,13 +77,15 @@ int main()
 
 
 
-##Structure
+## Structure
 
 *Loader struct
 *Variagles struct
 *Init struct
 *Parser struct
 *Loader struct
+
+> Loader Class
 
 The Loader struct is responsible for loading code from a file into the program. It includes the following components:
 
@@ -97,20 +99,6 @@ struct Loader
 	// Constructor that loads code from a file into the 'code' vector.
 };
 ```
-Constructor Definition
-The Loader struct defines a constructor that loads code from a specified file into the code vector. Here's how it works:
-
-The constructor opens the file specified by filename for reading using std::ifstream.
-It checks if the file was successfully opened and throws a std::runtime_error if the opening fails.
-The constructor uses a temporary variable line to read each line of the file.
-It reads each line from the file and stores it in the code vector, ignoring empty lines.
-Finally, the constructor closes the file when done reading.
-This Loader struct is used to initialize the code vector with the content of the code file, which is then processed by the Parser class for step-by-step execution.
-
-
-Loader Class
-
-The Loader struct is responsible for loading code from a file into the program. It includes the following components:
 
 Constructor Definition
 The Loader struct defines a constructor that loads code from a specified file into the code vector. Here's how it works:
@@ -124,9 +112,9 @@ This Loader struct is used to initialize the code vector with the content of the
 Interpreting Error Messages
 If the program encounters errors in the code, it will provide detailed error messages, including the line number and the nature of the error. Use these messages to identify and fix issues in your code.
 
-Customizing the Program
+## Customizing the Program
 You can customize the program's behavior by modifying the code in the Parser class and the associated lambdas that handle various operations. Be sure to follow the program's code structure and comments for guidance.
 
-Conclusion
+## Conclusion
 
 The Interpreter Simulate Program is a valuable educational tool for understanding how code is executed step by step. By loading your code and using this program, you can gain insights into the inner workings of an interpreter and learn to identify and correct errors in your programs.
