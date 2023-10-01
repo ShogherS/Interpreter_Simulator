@@ -34,7 +34,7 @@ Error Handling: It provides detailed error messages and validation checks for va
 How to Use
 To run the Interpreter Simulate Program, you need:
 
-1. The program rads the code from the text file. Here is the exsample of the code that the program can excecute:
+1. The program reads the code from the text file. Here is the example of the code that the program can execute:
 
 ```
 int main() {
@@ -52,7 +52,7 @@ int main() {
 }
 ```
 
-2. The next step is to download all files of the current repositry to your computer. Clone or download the program's source code to your local machine.
+2. The next step is to download all files of the current repository to your computer. Clone or download the program's source code to your local machine.
 	loader.h
 	parser.h
 	parser.cpp
@@ -155,8 +155,7 @@ struct Parser
 Constructor Definition:
 
 Parser(std::vector<std::string>&): Initializes the Parser object by accepting a reference to a vector of strings, which is expected to contain lines of code to be parsed and analyzed.
-## Customizing the Program
-You can customize the program's behavior by modifying the code in the Parser class and the associated lambdas that handle various operations. Be sure to follow the program's code structure and comments for guidance.
+
 ### Variavles struct
 
 The Variables class defines a structured data container for managing and organizing various types of variables used within a C++ program. This class employs a set of C++ maps to categorize and store different variable types, each identified by its name as the map key. Below is a detailed description of its components:
@@ -224,7 +223,8 @@ Class Purpose:
 
 The Init class serves as a centralized repository for functions and operations related to variable assignment, comparison, and control flow handling. It encapsulates these functionalities into lambda functions that can be easily accessed and used by other parts of the code analysis and processing framework. Developers can leverage this class to perform operations such as variable assignment and comparison, and control flow evaluation, streamlining code analysis and manipulation tasks.
 
-
+## Customizing the Program
+You can customize the program's behavior by modifying the code in the Parser class and the associated lambdas that handle various operations. Be sure to follow the program's code structure and comments for guidance.
 
 ## Conclusion
 
