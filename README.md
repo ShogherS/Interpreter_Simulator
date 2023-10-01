@@ -79,11 +79,10 @@ int main()
 
 ## Structure
 
-	- Loader struct
-- Variagles struct
--Init struct
-*Parser struct
-*Loader struct
+- Loader struct
+- Parser struct
+- Variables struct
+- Init struct
 
 ### Loader Struct
 
@@ -158,6 +157,74 @@ Constructor Definition:
 Parser(std::vector<std::string>&): Initializes the Parser object by accepting a reference to a vector of strings, which is expected to contain lines of code to be parsed and analyzed.
 ## Customizing the Program
 You can customize the program's behavior by modifying the code in the Parser class and the associated lambdas that handle various operations. Be sure to follow the program's code structure and comments for guidance.
+### Variavles struct
+
+The Variables class defines a structured data container for managing and organizing various types of variables used within a C++ program. This class employs a set of C++ maps to categorize and store different variable types, each identified by its name as the map key. Below is a detailed description of its components:
+
+```
+struct Variables
+{
+    // This struct defines a collection of various types of variables using C++ maps.
+    
+    // Maps for storing boolean variables with their names as keys.
+    std::map<std::string, std::pair<bool, std::string>> booleans;
+    
+    // Maps for storing character variables with their names as keys.
+    std::map<std::string, std::pair<char, std::string>> characters;
+    
+    // Maps for storing integer variables with their names as keys.
+    std::map<std::string, std::pair<int, std::string>> integers;
+    
+    // Maps for storing string variables with their names as keys.
+    std::map<std::string, std::pair<std::string, std::string>> strings;
+    
+    // Maps for storing character arrays (vectors) with their names as keys.
+    std::map<std::string, std::vector<char>> charArr;
+    
+    // Maps for storing integer arrays (vectors) with their names as keys.
+    std::map<std::string, std::vector<int>> intArr;
+};
+```
+
+Class Purpose:
+
+The Variables class provides a centralized data structure for managing and organizing variables of various data types within a C++ program. It allows for efficient storage and retrieval of variables based on their types and names, making it a valuable tool for code analysis, manipulation, and debugging. Developers can utilize this class to track and manage variables throughout the program's execution, facilitating tasks such as variable lookup, modification, and data inspection.
+
+### Init struct
+
+The Init class represents a utility class within a larger code analysis and processing framework. It contains various data structures and lambda functions to initialize and handle specific operations related to assignment, comparison, and control flow statements. Below is a detailed description of its components:
+```
+struct Init
+{	std::map<std::string, std::function<void(std::vector<std::string>&, std::string&, Variables&)>> operations {
+	{"=", // Lambda function for assignment
+			[](std::vector<std::string>& line, std::string& type, Variables& variables) { }},
+	{"+=",	// Lambda function for addition assignment
+		 [](std::vector<std::string>& line, std::string& type, Variables& variables) { }},
+	{"-=",	// Lambda function for subtraction assignment
+		[](std::vector<std::string>& line, std::string& type, Variables& variables) { }},
+	{"++", [](std::vector<std::string>& line, std::string& type, Variables& variables){ }},
+	{"--", [](std::vector<std::string>& line, std::string& type, Variables& variables){ }}
+	};
+	std::map<std::string, std::function<bool(std::string&, std::string&, Variables&)>> cmp { }},
+	{"!=", [this](std::string& argument1, std::string& argument2, Variables& variables) -> bool { }},
+	{"<", [this](std::string& argument1, std::string& argument2, Variables& variables) -> bool { }},
+	{">", [this](std::string& argument1, std::string& argument2, Variables& variables) -> bool { }} 
+	};
+
+	std::map<std::string, std::function<bool(std::vector<std::vector<std::string>>&, Variables&,  size_t&)>> ifwh {
+	{"if", [this](std::vector<std::vector<std::string>>& code, Variables& variables, size_t& line) -> bool { } },
+	{"while", [this](std::vector<std::vector<std::string>>& code, Variables& variables, size_t& line) -> bool { }}
+	};
+	std::string isDeclared(Variables&, std::string&);
+};
+
+```
+
+Class Purpose:
+
+The Init class serves as a centralized repository for functions and operations related to variable assignment, comparison, and control flow handling. It encapsulates these functionalities into lambda functions that can be easily accessed and used by other parts of the code analysis and processing framework. Developers can leverage this class to perform operations such as variable assignment and comparison, and control flow evaluation, streamlining code analysis and manipulation tasks.
+
+
 
 ## Conclusion
 
