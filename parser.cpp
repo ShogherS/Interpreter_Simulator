@@ -168,22 +168,24 @@ bool Parser::variableParser(size_t& line, Variables& variables)
 		size_t sline = line;
 		while (flag && !break_flag) {
 			while (line < fline) {
-//new variables with all the data
+			//new variables with all the data
 				Variables newVars = variables;
 				++line;
+			/*
 				if (code[line][0] == "break") {
 					break_flag = true;
 					flag = false;
 					break;
 				}
+			*/
 				variableParser(line, newVars);	
 				updateVars(newVars, variables);
 			}
-			if (break_flag) {
+			/*if (break_flag) {
 				flag = false;
 				break_flag = false;
 				break;
-			} 
+			} */
 			if (current[0] == "if") break;
 			line = sline;
 			flag = init.ifwh["while"](code,variables,line);
@@ -199,7 +201,14 @@ bool Parser::variableParser(size_t& line, Variables& variables)
 	} else if (current[0] == "std::cout") {
 		parsCout(line);	
 	} else if (current[0] == "break"){
-		
+		size_t ccc{};
+		while (ccc < 2) {
+			if (code[line][0] == "}") {
+				++ccc;
+			}
+			++line;
+		}
+		break_flag = true;
 	} else {
 		std::string varType = isDeclared(current[0]);        // Handle other cases (e.g., variable references, operations)
 		if (varType == "NO") {	
