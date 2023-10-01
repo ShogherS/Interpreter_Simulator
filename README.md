@@ -79,9 +79,9 @@ int main()
 
 ## Structure
 
-*Loader struct
-*Variagles struct
-*Init struct
+	- Loader struct
+- Variagles struct
+-Init struct
 *Parser struct
 *Loader struct
 
@@ -100,7 +100,7 @@ struct Loader
 };
 ```
 
-Constructor Definition
+Constructor Definition:
 The Loader struct defines a constructor that loads code from a specified file into the code vector. Here's how it works:
 
 The constructor opens the file specified by filename for reading using std::ifstream.
@@ -153,7 +153,7 @@ struct Parser
     bool break_flag; // Boolean flag
 };
 ```
-Constructor:
+Constructor Definition:
 
 Parser(std::vector<std::string>&): Initializes the Parser object by accepting a reference to a vector of strings, which is expected to contain lines of code to be parsed and analyzed.
 ## Customizing the Program
