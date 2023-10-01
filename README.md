@@ -53,13 +53,13 @@ int main() {
 ```
 
 2. The next step is to download all files of the current repositry to your computer. Clone or download the program's source code to your local machine.
-   *loader.h
-   *parser.h
-   *parser.cpp
-   *init.h
-   *variables.h
+	loader.h
+	parser.h
+	parser.cpp
+	init.h
+	variables.h
 
-3. The next step is to crete a .cpp file and include loader.h and parser.cpp files. Open a terminal or command prompt and navigate to the directory containing the program's source code. Aftervards you need to creale an instance of Loader class, it has a constructor with a string as a parameter. Its main role is to load the text file that with the code and sawe it. Next the Parser clss steps in, it also has a constructor with a parameter and a method pars which compiles the ocde. And at last you can chek the status of all the delatred vairables in your code calling the print method.
+4. The next step is to crete a .cpp file and include loader.h and parser.cpp files. Open a terminal or command prompt and navigate to the directory containing the program's source code. Aftervards you need to creale an instance of Loader class, it has a constructor with a string as a parameter. Its main role is to load the text file that with the code and sawe it. Next the Parser clss steps in, it also has a constructor with a parameter and a method pars which compiles the ocde. And at last you can chek the status of all the delatred vairables in your code calling the print method.
 
 ```
 #include "loader.h"
@@ -113,6 +113,7 @@ Interpreting Error Messages
 If the program encounters errors in the code, it will provide detailed error messages, including the line number and the nature of the error. Use these messages to identify and fix issues in your code.
 
 ### Parser struct
+The Parser struct represents a code parser and processor designed to analyze and manipulate code written in C++ or a similar programming language. It offers functionality to dissect and understand the structure of code, identify variables and their types, check for the presence of key language elements, and manage related data structures. Below is a description of its components:
 ```
 struct Parser
 {
@@ -152,7 +153,9 @@ struct Parser
     bool break_flag; // Boolean flag
 };
 ```
+Constructor:
 
+Parser(std::vector<std::string>&): Initializes the Parser object by accepting a reference to a vector of strings, which is expected to contain lines of code to be parsed and analyzed.
 ## Customizing the Program
 You can customize the program's behavior by modifying the code in the Parser class and the associated lambdas that handle various operations. Be sure to follow the program's code structure and comments for guidance.
 
