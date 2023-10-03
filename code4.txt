@@ -1,0 +1,16 @@
+#include <iostream>
+
+int main() {
+	int i = 0;
+	int j = 5;
+	int sum = 0;
+	while (i < j) {
+		std::cout << sum << std::endl;
+		if (sum > 3) {
+			std::cout << "OK" << std::endl;
+		}
+		++sum;
+		++i;
+	}
+	return 0;
+} 

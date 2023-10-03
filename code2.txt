@@ -1,0 +1,13 @@
+#include <iostream>
+
+int main() {
+	int num = 5;
+	char arr[num] = {'a','b','c','d','e'};
+	char arr2[5] = arr;
+	int i = 0;
+	while (i < num) {
+		std::cout << arr2[i] <<  std::endl;
+		++i;
+	}
+	return 0;
+} 

@@ -88,7 +88,10 @@ struct Init
 					throw std::invalid_argument("Invalid value. A stirng literal is excpectrd.");	
 				}		
 			}
-			value += line[2];
+			value.pop_back();
+			std::string value2 = line[2].substr(1, line[2].size() - 1);
+			value += " ";
+			value += value2;
 		}
 		++i;
 	        // Check for the semicolon to complete the statement
@@ -279,7 +282,7 @@ struct Init
 		} else if (type == "string") {
 			throw std::invalid_argument("Invalid operation for string type.");	
 		}
-		throw std::invalid_argument("THF <");
+		throw std::invalid_argument("Uncnown argument at < operation");
 		return false;
 	} },
 	{">", [this](std::string& argument1, std::string& argument2, Variables& variables) -> bool {
@@ -290,14 +293,14 @@ struct Init
 		} else if (type == "int") {
 			int value = variables.integers[argument1].first;
 			if (type2 == "int") {
-				return value < variables.integers[argument2].first ? true : false;
+				return value > variables.integers[argument2].first ? true : false;
 			} else {
-				return value < std::stoi(argument2) ? true : false;
+				return value > std::stoi(argument2) ? true : false;
 			}	
 		} else if (type == "char") {
 			char value = variables.characters[argument1].first;
 			if (type2 == "char") {
-				return value < variables.characters[argument2].first ? true : false;
+				return value > variables.characters[argument2].first ? true : false;
 			} else if (argument2.size() == 3 && argument2[0] == '\'' && argument2[2] == '\'' ) {
 				return value > argument2[1]? true : false;
 			} else {
@@ -306,7 +309,7 @@ struct Init
 		} else if (type == "string") {
 			throw std::invalid_argument("Invalid operation for string type.");	
 		}
-		throw std::invalid_argument("Unknown argument.");
+		throw std::invalid_argument("Unknown argument at > operation.");
 		return false;
 	} } 
 	};

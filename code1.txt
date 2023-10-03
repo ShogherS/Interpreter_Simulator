@@ -1,0 +1,10 @@
+#include <iostream>
+
+int main() {
+	int num = 10;
+	num += 100;
+	if (num > 101) {
+		std::cout << "GOOD" << num <<  std::endl;
+	}
+	return 0;
+} 

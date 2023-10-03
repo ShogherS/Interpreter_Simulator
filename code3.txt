@@ -1,0 +1,12 @@
+#include <iostream>
+
+int main() {
+	string hi = "Hello";
+	string by = "Bye";
+	by += "Babe";
+	std::cout << hi << by << std::endl;
+	if (hi == "Hello") {
+		std::cout << "good" << std::endl;
+	}
+	return 0;
+} 

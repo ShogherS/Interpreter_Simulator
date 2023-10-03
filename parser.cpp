@@ -635,6 +635,7 @@ std::string Parser::getValue(std::string& name) {
             return std::to_string(val);
         } else if (type == "string") {
             std::string val = variables.strings[name].first;
+	    val = val.substr(1,val.size() - 2);
             return val;
         }
     } else {
