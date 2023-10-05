@@ -32,4 +32,3 @@ struct Variables
 };
 
 #endif // VARIABLES_H
-
