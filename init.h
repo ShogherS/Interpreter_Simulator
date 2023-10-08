@@ -7,6 +7,8 @@
 #include <stack>
 
 #include "variables.h"
+#include "utility.h"
+
 
 struct Init
 {
@@ -16,32 +18,13 @@ struct Init
 			size_t i = 2;
 		        // Check the variable type and perform the assignment accordingly
 			if (type == "bool") {
-				bool& value = variables.booleans[line[0]].first;
-				if (line[i] == "true") {
-					value = true;
-				} else if ( line[i] == "false") {
-					value = false;
-				} else if (variables.booleans.find(line[i]) != variables.booleans.end()) {
-					value = variables.booleans[line[i]].first;
-				} else {
-					  throw std::invalid_argument("Invalid argument \"" + line[i] + "\".");    
-				}                                             
+				variables.booleans[line[0]].first = toBool(line[i], 111, variables);
 			} else if (type == "int") {
-				int& value = variables.integers[line[0]].first;
-				if (variables.integers.find(line[i]) != variables.integers.end()) {
-					value = variables.integers[line[i]].first;
-				} else {
-					value = std::stoi(line[i]);
-				}	
+				variables.integers[line[0]].first = toInt(line[i], 111, variables);
 			} else if (type == "char") {
-				char& value = variables.characters[line[0]].first;
-				if (variables.characters.find(line[i]) != variables.characters.end()) {
-					value = variables.characters[line[i]].first;
-				} else if (line[i].size() == 3 && line[i][0] == '\'' && line[i][2] == '\'' ) {
-					value = line[i][1];
-				} else {
-					  throw std::invalid_argument("Invalid argument \"" + line[i] + "\".");    
-				}                                             
+				variables.characters[line[0]].first = toChar(line[i], 111, variables);
+			} else if (type == "double") {
+				variables.doubles[line[0]].first = toDouble(line[i], 111, variables);
 			} else if (type == "string") {
 				std::string& value = variables.strings[line[0]].first;
 				if (variables.strings.find(line[i]) != variables.strings.end()) {
@@ -57,6 +40,12 @@ struct Init
 					}		
 					value = line[2];
 				}
+			} else if (type == "intArr") {
+				std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
+				variables.intArr[value.first][value.second] = toInt(line[2], 111, variables);
+			} else if (type == "charArr") {
+				std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
+				variables.charArr[value.first][value.second] = toChar(line[2], 111, variables);
 			}
 			++i;
 			// Check for the semicolon to complete the statement
@@ -71,14 +60,11 @@ struct Init
 		if (type == "bool") {
 			throw std::invalid_argument("Invalid operation.  += for type bool.");                          
 		} else if (type == "int") {
-			int& value = variables.integers[line[0]].first;
-			if (variables.integers.find(line[i]) != variables.integers.end()) {
-				value += variables.integers[line[i]].first;
-			} else {
-				value += std::stoi(line[i]);
-			}	
+			variables.integers[line[0]].first += toInt(line[2], 222, variables);
 		} else if (type == "char") {
-			throw std::invalid_argument("Invalid operation.  += for type char.");                          
+			variables.characters[line[0]].first += toInt(line[2], 222, variables);
+		} else if (type == "double") {
+			variables.doubles[line[0]].first += toDouble(line[2], 222, variables);
 		} else if (type == "string") {
 			std::string& value = variables.strings[line[0]].first;
 			if (variables.strings.find(line[i]) != variables.strings.end()) {
@@ -92,7 +78,13 @@ struct Init
 			std::string value2 = line[2].substr(1, line[2].size() - 1);
 			value += " ";
 			value += value2;
-		}
+		} else if (type == "intArr") {
+				std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
+				variables.intArr[value.first][value.second] += toInt(line[2], 111, variables);
+		} else if (type == "charArr") {
+				std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
+				variables.charArr[value.first][value.second] += toChar(line[2], 111, variables);
+			}
 		++i;
 	        // Check for the semicolon to complete the statement
 
@@ -106,19 +98,21 @@ struct Init
 		// Check the variable type and perform the subtraction assignment accordingly
 
 		if (type == "bool") {
-			throw std::invalid_argument("Invalid operation.  -= for type bool.");                          
+			throw std::invalid_argument("Invalid operation.  -= for type bool.");
 		} else if (type == "int") {
-			int& value = variables.integers[line[0]].first;
-			if (variables.integers.find(line[i]) != variables.integers.end()) {
-				value -= variables.integers[line[i]].first;
-			} else {
-				value -= std::stoi(line[i]);
-			}	
+			variables.integers[line[0]].first -= toInt(line[i], 333, variables);
 		} else if (type == "char") {
-			throw std::invalid_argument("Invalid operation.  -= for type char.");                          
+			variables.characters[line[0]].first -= toInt(line[i], 333, variables);
+		} else if (type == "double") {
+			variables.doubles[line[0]].first -= toDouble(line[i], 333, variables);
 		} else if (type == "string") {
-			throw std::invalid_argument("Invalid operation.  -= for type string.");                          
-		} else if (type == "string") {
+			throw std::invalid_argument("Invalid operation.  -= for type string.");
+		} else if (type == "intArr") {
+				std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
+				variables.intArr[value.first][value.second] = toInt(line[2], 111, variables);
+		} else if (type == "charArr") {
+				std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
+				variables.charArr[value.first][value.second] = toChar(line[2], 111, variables);
 		}
 		++i;
 		// Check for the semicolon to complete the statement
@@ -128,34 +122,46 @@ struct Init
 	}},
 	{"++", [](std::vector<std::string>& line, std::string& type, Variables& variables){
 		if (type == "bool") {
-			throw std::invalid_argument("Invalid operation.  -- for type bool.");                          
+			throw std::invalid_argument("Invalid operation.  ++ for type bool.");
 		} else if (type == "int") {
-			int& value = variables.integers[line[0]].first;
-			++value;	
+			++variables.integers[line[0]].first;
 		} else if (type == "char") {
-			char& value = variables.characters[line[0]].first;
-			++value;	
+			++variables.characters[line[0]].first;
+		} else if (type == "double") {
+			++variables.doubles[line[0]].first;
 		} else if (type == "string") {
-			throw std::invalid_argument("Invalid operation.  -= for type string.");                          
+			throw std::invalid_argument("Invalid operation.  -= for type string.");
+		} else if (type == "intArr") {
+			std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
+			variables.intArr[value.first][value.second] = toInt(line[2], 111, variables);
+		} else if (type == "charArr") {
+			std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
+			variables.charArr[value.first][value.second] = toChar(line[2], 111, variables);
 		}
 		if ( 2 >= line.size() || line[2] != ";") {
-			throw std::invalid_argument("Unknown symbole \"" + line[2]+ "\".");                         
+			throw std::invalid_argument("Unknown symbole \"" + line[2]+ "\".");
 		}
 	} },
 	{"--", [](std::vector<std::string>& line, std::string& type, Variables& variables){
 		if (type == "bool") {
-			throw std::invalid_argument("Invalid operation.  -- for type bool.");                          
+			throw std::invalid_argument("Invalid operation.  -- for type bool.");
 		} else if (type == "int") {
-			int& value = variables.integers[line[0]].first;
-			--value;	
+			--variables.integers[line[0]].first;
 		} else if (type == "char") {
-			char& value = variables.characters[line[0]].first;
-			--value;	
+			--variables.characters[line[0]].first;
+		} else if (type == "double") {
+			--variables.doubles[line[0]].first;
 		} else if (type == "string") {
-			throw std::invalid_argument("Invalid operation.  -= for type string.");                          
+			throw std::invalid_argument("Invalid operation.  -= for type string.");
+		} else if (type == "intArr") {
+			std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
+			variables.intArr[value.first][value.second] = toInt(line[2], 111, variables);
+		} else if (type == "charArr") {
+			std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
+			variables.charArr[value.first][value.second] = toChar(line[2], 111, variables);
 		}
 		if ( 2 >= line.size() || line[2] != ";") {
-			throw std::invalid_argument("Unknown symbole \"" + line[2]+ "\".");                         
+			throw std::invalid_argument("Unknown symbole \"" + line[2]+ "\".");
 		}
 	} }
 	};
@@ -163,38 +169,11 @@ struct Init
 	{"==", [this](std::string& argument1, std::string& argument2, Variables& variables) -> bool {
 		std::string type = isDeclared(variables, argument1);
 		std::string type2 = isDeclared(variables, argument2);
-		if (type2 != "NO") {
-			std::string tmp = argument2;
-			argument2 = argument1;
-			argument1 = tmp;
-		}
-		if (type == "bool") {
-			bool value = variables.booleans[argument1].first;
-			if (argument2 == "true") {
-				return value == true ? true : false;
-			} else if ( argument2 == "false") {
-				return value == false ? true : false;
-			} else if (type2 == "bool") {
-				return value == variables.booleans[argument2].first ? true : false;
-			} else {
-				  throw std::invalid_argument("Invalid argument \"" + argument2  + "\".");    
-			}                                             
-		} else if (type == "int") {
-			int& value = variables.integers[argument1].first;
-			if (type2 == "int") {
-				return value == variables.integers[argument2].first ? true : false;
-			} else {
-				return value == std::stoi(argument2) ? true : false;
-			}	
-		} else if (type == "char") {
-			char& value = variables.characters[argument1].first;
-			if (type2 == "char") {
-				return value == variables.characters[argument2].first ? true : false;
-			} else if (argument2.size() == 3 && argument2[0] == '\'' && argument2[2] == '\'' ) {
-				return value == argument2[1]? true : false;
-			} else {
-				  throw std::invalid_argument("Invalid argument \"" + argument2 + "\".");    
-			}                                             
+		if (type == "double") {
+			double lhs = variables.doubles[argument1].first;
+			double rhs = toDouble(argument2, 444, variables);
+			return lhs == rhs;
+
 		} else if (type == "string") {
 			std::string& value = variables.strings[argument1].first;
 			if (type2 == "string") {
@@ -206,44 +185,18 @@ struct Init
 			return value == argument2 ? true : false;
 			}
 		}
-		throw std::invalid_argument("Unknown argument.");
-		return false;
+		int lhs = toInt(argument1, 444, variables);
+		int rhs = toInt(argument2, 444, variables);
+		bool result = lhs == rhs;
+		return result;
 	} },
 	{"!=", [this](std::string& argument1, std::string& argument2, Variables& variables) -> bool {
 		std::string type = isDeclared(variables, argument1);
 		std::string type2 = isDeclared(variables, argument2);
-		if (type2 != "NO") {
-			std::string tmp = argument2;
-			argument2 = argument1;
-			argument1 = tmp;
-		}
-		if (type == "bool") {
-			bool value = variables.booleans[argument1].first;
-			if (argument2 == "true") {
-				return value != true ? true : false;
-			} else if ( argument2 == "false") {
-				return value != false ? true : false;
-			} else if (type2 == "bool") {
-				return value != variables.booleans[argument2].first ? true : false;
-			} else {
-				  throw std::invalid_argument("Invalid argument \"" + argument2  + "\".");    
-			}                                             
-		} else if (type == "int") {
-			int& value = variables.integers[argument1].first;
-			if (type2 == "int") {
-				return value != variables.integers[argument2].first ? true : false;
-			} else {
-				return value != std::stoi(argument2) ? true : false;
-			}	
-		} else if (type == "char") {
-			char& value = variables.characters[argument1].first;
-			if (type2 == "char") {
-				return value != variables.characters[argument2].first ? true : false;
-			} else if (argument2.size() == 3 && argument2[0] == '\'' && argument2[2] == '\'' ) {
-				return value != argument2[1]? true : false;
-			} else {
-				  throw std::invalid_argument("Invalid argument \"" + argument2 + "\".");    
-			}                                             
+		if (type == "double") {
+			double lhs = variables.doubles[argument1].first;
+			double rhs = toDouble(argument2, 444, variables);
+			return lhs != rhs;
 		} else if (type == "string") {
 			std::string& value = variables.strings[argument1].first;
 			if (type2 == "string") {
@@ -255,64 +208,75 @@ struct Init
 			return value != argument2 ? true : false;
 			}
 		}
-		throw std::invalid_argument("Unknown argument.");
+		int lhs = toInt(argument1, 444, variables);
+		int rhs = toInt(argument2, 444, variables);
+		bool result = lhs != rhs;
 		return false;
 	} },
 	{"<", [this](std::string& argument1, std::string& argument2, Variables& variables) -> bool {
 		std::string type = isDeclared(variables, argument1);
 		std::string type2 = isDeclared(variables, argument2);
-		if (type == "bool") {
-			throw std::invalid_argument("Invalid operation for boolean type.");
-		} else if (type == "int") {
-			int value = variables.integers[argument1].first;
-			if (type2 == "int") {
-				return value < variables.integers[argument2].first ? true : false;
-			} else {
-				return value < std::stoi(argument2) ? true : false;
-			}	
-		} else if (type == "char") {
-			char value = variables.characters[argument1].first;
-			if (type2 == "char") {
-				return value < variables.characters[argument2].first ? true : false;
-			} else if (argument2.size() == 3 && argument2[0] == '\'' && argument2[2] == '\'' ) {
-				return value < argument2[1]? true : false;
-			} else {
-				  throw std::invalid_argument("Invalid argument \"" + argument2 + "\".");    
-			}                                             
-		} else if (type == "string") {
+		bool result{};
+		if (type == "double") {
+			double lhs = variables.doubles[argument1].first;
+			double rhs = toDouble(argument2, 444, variables);
+			return lhs < rhs;
+		} else if (type == "string" || type2 == "string") {
 			throw std::invalid_argument("Invalid operation for string type.");	
 		}
-		throw std::invalid_argument("Uncnown argument at < operation");
-		return false;
+		int lhs = toInt(argument1, 444, variables);
+		int rhs = toInt(argument2, 444, variables);
+		result = lhs < rhs; 
+		return result;
 	} },
 	{">", [this](std::string& argument1, std::string& argument2, Variables& variables) -> bool {
 		std::string type = isDeclared(variables, argument1);
 		std::string type2 = isDeclared(variables, argument2);
-		if (type == "bool") {
-			throw std::invalid_argument("Invalid operation for boolean type.");
-		} else if (type == "int") {
-			int value = variables.integers[argument1].first;
-			if (type2 == "int") {
-				return value > variables.integers[argument2].first ? true : false;
-			} else {
-				return value > std::stoi(argument2) ? true : false;
-			}	
-		} else if (type == "char") {
-			char value = variables.characters[argument1].first;
-			if (type2 == "char") {
-				return value > variables.characters[argument2].first ? true : false;
-			} else if (argument2.size() == 3 && argument2[0] == '\'' && argument2[2] == '\'' ) {
-				return value > argument2[1]? true : false;
-			} else {
-				  throw std::invalid_argument("Invalid argument \"" + argument2 + "\".");    
-			}                                             
-		} else if (type == "string") {
+		if (type == "double") {
+			double lhs = variables.doubles[argument1].first;
+			double rhs = toDouble(argument2, 444, variables);
+			return lhs > rhs;
+		} else if (type == "string" || type2 == "string") {
 			throw std::invalid_argument("Invalid operation for string type.");	
 		}
-		throw std::invalid_argument("Unknown argument at > operation.");
-		return false;
-	} } 
-	};
+		bool result{};
+		int lhs = toInt(argument1, 444, variables);
+		int rhs = toInt(argument2, 444, variables);
+		result = lhs > rhs;
+		return result;
+	} }, 
+	{"<=", [this](std::string& argument1, std::string& argument2, Variables& variables) -> bool {
+		std::string type = isDeclared(variables, argument1);
+		std::string type2 = isDeclared(variables, argument2);
+		bool result{};
+		if (type == "double") {
+			double lhs = variables.doubles[argument1].first;
+			double rhs = toDouble(argument2, 444, variables);
+			return lhs <= rhs;
+		} else if (type == "string" || type2 == "string") {
+			throw std::invalid_argument("Invalid operation for string type.");	
+		}
+		int lhs = toInt(argument1, 444, variables);
+		int rhs = toInt(argument2, 444, variables);
+		result = lhs <= rhs; 
+		return result;
+	} },
+	{">=", [this](std::string& argument1, std::string& argument2, Variables& variables) -> bool {
+		std::string type = isDeclared(variables, argument1);
+		std::string type2 = isDeclared(variables, argument2);
+		if (type == "double") {
+			double lhs = variables.doubles[argument1].first;
+			double rhs = toDouble(argument2, 444, variables);
+			return lhs >= rhs;
+		} else if (type == "string" || type2 == "string") {
+			throw std::invalid_argument("Invalid operation for string type.");	
+		}
+		bool result{};
+		int lhs = toInt(argument1, 444, variables);
+		int rhs = toInt(argument2, 444, variables);
+		result = lhs >= rhs;
+		return result;
+	} } };
 
 	std::map<std::string, std::function<bool(std::vector<std::vector<std::string>>&, Variables&,  size_t&)>> ifwh {
 		{"if", [this](std::vector<std::vector<std::string>>& code, Variables& variables, size_t& line) -> bool {
@@ -359,6 +323,7 @@ struct Init
 	std::string isDeclared(Variables&, std::string&);
 };
 
+
 std::string Init::isDeclared(Variables& variables, std::string& key)
 {
 	if (variables.integers.find(key) != variables.integers.end()) {
@@ -369,8 +334,9 @@ std::string Init::isDeclared(Variables& variables, std::string& key)
 		return variables.characters[key].second;
 	} else if (variables.strings.find(key) != variables.strings.end()) {	
 		return variables.strings[key].second;
+	} else if (variables.doubles.contains(key)) {
+		return variables.doubles[key].second;
 	}
 	return "NO";
 }
-
 #endif //INIT_H

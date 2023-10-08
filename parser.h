@@ -36,13 +36,17 @@ struct Parser
     void trimString(std::string&);
     void print() const;
     std::string isDeclared(const std::string&);
-    void arrRhs(std::string&, std::string&, std::string&, const size_t, Variables&);
-    std::pair<std::string, int> arrNamePars(std::string&, Variables&);
+    void arrRhs(std::string&, std::string&, std::string&, const size_t size, const size_t, Variables&);
+    std::pair<std::string, size_t> arrNamePars(std::string&, Variables&);
     void updateVars(Variables& newVars, Variables& variables);
     void checkRedefinition(const size_t line) const;
     void checkSemicolon(const size_t line) const;
-
-    // Member variables
+    bool toBool(std::string&, size_t, Variables&);
+    char toChar(std::string& , size_t, Variables&);
+    int toInt(std::string&, const size_t, Variables&);
+double toDouble(std::string& rhs, const size_t line, Variables&  variables);
+// std::string toString(std::string&, const size_t, Variables&);
+   // Member variables
     std::vector<std::string>& data; // Reference to a vector of strings
     std::vector<std::vector<std::string>> code; // 2D vector of strings
 

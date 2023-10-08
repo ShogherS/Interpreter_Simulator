@@ -1,16 +1,24 @@
 #include <iostream>
 
 int main() {
-	int i = 0;
+	double a = 25.245;
+	++a;
+	std::cout << "Double: " << a << std::endl;
+	int i = a;
 	int j = 5;
+	bool b = j;
 	int sum = 0;
-	while (i < j) {
+	std::cout << b << std::endl;
+	while (i <= j) {
 		std::cout << sum << std::endl;
 		if (sum > 3) {
 			std::cout << "OK" << std::endl;
 		}
 		++sum;
 		++i;
+	}
+	if (-4 < true) {
+		std::cout << 4 << std::endl;
 	}
 	return 0;
 } 

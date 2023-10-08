@@ -65,9 +65,9 @@ bool Parser::hasMain(size_t mainLine) {
 bool Parser::variableParser(size_t& line, Variables& variables)
 {
 	std::vector<std::string>& current = code[line];
-	if (current[1].back() == ']') {
+	if (current[1].back() == ']' && (current[0] == "int" || current[0] == "char")) {
 		//array name analises
-		std::pair<std::string, int> arrInfo =  arrNamePars(current[1], variables);
+		std::pair<std::string, size_t> arrInfo =  arrNamePars(current[1], variables);
 		//check redefinition
 		if (isDeclared(arrInfo.first) != "NO") {
 			throw std::invalid_argument("Redefinition in lien " + std::to_string(line) + "."); 
@@ -77,49 +77,26 @@ bool Parser::variableParser(size_t& line, Variables& variables)
 			throw std::invalid_argument("The = is expected in line " + std::to_string(line) + ".");
 		}
 		//check rhs expression
-		arrRhs(current[0], arrInfo.first, current[3], line, variables);	        // Check rhs expression for the array
+		arrRhs(current[0], arrInfo.first, current[3], line, arrInfo.second, variables);	        // Check rhs expression for the array
 		checkSemicolon(line);
 	} else if (current[0] == "bool") {        // Handle boolean variable declaration
 		checkRedefinition(line);
-		std::string type2 = isDeclared(current[3]);
-		bool val{};
-		if (type2 == "bool") {
-			val = variables.booleans[current[3]].first;
-		} else if (current[3] == "true" || current[3] == "false") {
-			val = "true" ? true : false;
-		} else {
-			throw std::invalid_argument("Invalid value in line " + std::to_string(line) + ", true or false is excpected.");
-		}
+		bool val = toBool(current[3], line, variables);
 		checkSemicolon(line);
 		std::pair<bool, std::string> p (val, "bool");
 		variables.booleans[current[1]] = p;
 	} else if (current[0] == "char") {        // Handle character variable declaration
 		checkRedefinition(line);
-		std::string type2 = isDeclared(current[3]);
-		char val{};	
-		if (current[3].size() == 3 && current[3][0] == '\'' &&  current[3][2] == '\'') {
-			char val = current[3][1];
-		} else if (type2 == "char") {
-			val = variables.characters[current[3]].first;
-		} else {
-			throw std::invalid_argument("Invalid value in line " + std::to_string(line) + ", a single character is excpected.");
-		}
+		char val = toChar(current[3], line, variables);	
 		checkSemicolon(line);
 		std::pair<char, std::string> p (val, "char");
 		variables.characters[current[1]] = p;
 	} else if (current[0] == "int") {        // Handle integer variable declaration
 		checkRedefinition(line);
-		int val{};
-		std::string type2 = isDeclared(current[3]); 
-		if (type2 == "int") {
-			val = variables.integers[current[3]].first;
-		} else {
-			val = std::stoi(current[3]);
-		}
+		int val= toInt(current[3], line, variables);
 		checkSemicolon(line);
 		std::pair<int, std::string> p(val, "int");
 		variables.integers[current[1]] = p;		
-
 	} else if (current[0] == "string") {        // Handle string variable declaration
 		checkRedefinition(line);
 		std::string type2 = isDeclared(current[3]);
@@ -145,7 +122,11 @@ bool Parser::variableParser(size_t& line, Variables& variables)
 	} else if (current[0] == "float") {
 	
 	} else if (current[0] == "double") {
-	
+		checkRedefinition(line);
+		double val{toDouble(current[3], line, variables)};
+		checkSemicolon(line);
+		std::pair<double, std::string> p{val, "double"};
+		variables.doubles[current[1]] = p;
 	} else if (init.ifwh.contains(current[0])) {
 		bool flag = init.ifwh[current[0]](code,variables, line);
 		std::stack<char> curly;
@@ -171,21 +152,9 @@ bool Parser::variableParser(size_t& line, Variables& variables)
 			//new variables with all the data
 				Variables newVars = variables;
 				++line;
-			/*
-				if (code[line][0] == "break") {
-					break_flag = true;
-					flag = false;
-					break;
-				}
-			*/
-				variableParser(line, newVars);	
+			variableParser(line, newVars);	
 				updateVars(newVars, variables);
 			}
-			/*if (break_flag) {
-				flag = false;
-				break_flag = false;
-				break;
-			} */
 			if (current[0] == "if") break;
 			line = sline;
 			flag = init.ifwh["while"](code,variables,line);
@@ -391,7 +360,9 @@ void Parser::print()const
 	for (auto& item : variables.characters) {
 		std::cout << "Variable name: " << item.first << " value: " << item.second.first << " type: " << item.second.second << std::endl; 
 	}
-	for (auto& item : variables.strings) {
+	for (auto& item : variables.doubles) {
+		std::cout << "Variable name: " << item.first << " value: " << item.second.first << " type: " << item.second.second << std::endl; 
+	}for (auto& item : variables.strings) {
 		std::cout << "Variable name: " << item.first << " value: " << item.second.first << " type: " << item.second.second << std::endl; 
 	}
 	for (auto& item :variables.charArr) {
@@ -430,12 +401,22 @@ std::string Parser::isDeclared(const std::string& key) {
         return variables.characters[key].second; // Return the type if it's a character
     } else if (variables.strings.find(key) != variables.strings.end()) {
         return variables.strings[key].second; // Return the type if it's a string
+    } else if (variables.doubles.contains(key)) {
+	return variables.doubles[key].second;
     } else if (variables.charArr.contains(key)) {
         return "charArr"; // Return "charArr" if it's a character array
     } else if (variables.intArr.contains(key)) {
         return "intArr"; // Return "intArr" if it's an integer array
-    }
-
+    } else if (key.back() == ']') {
+	std::string key1 = key;
+	std::pair<std::string, size_t> value = arrNamePars(key1, variables);
+	key1 = value.first;
+		if (variables.charArr.contains(key1)) {
+        		return "charArr"; // Return "charArr" if it's a character array
+    		} else if (variables.intArr.contains(key1)) {
+        		return "intArr"; // Return "intArr" if it's an integer array
+    		}
+	}
     // If the variable identifier 'key' is not found in any map, return "NO" to indicate it's not declared.
     return "NO";
 }
@@ -460,8 +441,11 @@ void Parser::checkRedefinition(const size_t line) const {
         if (variables.strings.contains(code[line][1])) {
             throw std::invalid_argument("Redefinition in line " + std::to_string(line) + ".");
         }
+    } else if (code[line][0] == "double") {
+	if (variables.doubles.contains(code[line][1])) {
+            throw std::invalid_argument("Redefinition in line " + std::to_string(line) + ".");
+        }
     }
-
     // Check if the 3rd element (index 2) in the line is not equal to "="
     if (code[line][2] != "=") {
         throw std::invalid_argument("In line " + std::to_string(line) + ", '=' is expected.");
@@ -469,7 +453,7 @@ void Parser::checkRedefinition(const size_t line) const {
 }
 
 // Member function 'arrNamePars' definition
-std::pair<std::string, int> Parser::arrNamePars(std::string& name, Variables& variables) {
+std::pair<std::string, size_t> Parser::arrNamePars(std::string& name, Variables& variables) {
     // Find the position of the '[' symbol in the array declaration
     size_t pos = name.find('[');
     if (pos == std::string::npos) {
@@ -490,11 +474,11 @@ std::pair<std::string, int> Parser::arrNamePars(std::string& name, Variables& va
     }
 
     // Create a pair containing the array name and its size
-    std::pair<std::string, int> arrInfo(name1, i);
+    std::pair<std::string, size_t> arrInfo(name1, i);
     return arrInfo;
 }
 
-void Parser::arrRhs(std::string& type, std::string& name, std::string& rhs, const size_t line, Variables& variables) {
+void Parser::arrRhs(std::string& type, std::string& name, std::string& rhs, const size_t line, const size_t size, Variables& variables) {
     // Determine the type of the RHS expression (e.g., charArr, intArr, etc.)
     std::string type2 = isDeclared(rhs);
     type2 = type2.substr(0, type2.length() - 3);
@@ -502,9 +486,16 @@ void Parser::arrRhs(std::string& type, std::string& name, std::string& rhs, cons
     if (type2 == type) {
         // If the RHS type matches the expected type, copy the RHS into the corresponding array in 'variables'
         if (type2 == "char") {
+		if (variables.charArr[rhs].size() != size) {
+			throw std::invalid_argument("Error: excess elements in array in line " + std::to_string(line) + ".");
+	}
             variables.charArr[name] = variables.charArr[rhs];
         } else if (type2 == "int") {
-            variables.intArr[name] = variables.intArr[rhs];
+        	std::cout << size << "_____" << variables.intArr[rhs].size() << std::endl;
+		if (variables.intArr[rhs].size() != size) {
+			throw std::invalid_argument("Error: excess elements in array in line " + std::to_string(line) + ".");
+	}
+	    variables.intArr[name] = variables.intArr[rhs];
         }
     } else {
         // If the RHS type does not match the expected type, it should be an array literal in { ... } format
@@ -530,6 +521,10 @@ void Parser::arrRhs(std::string& type, std::string& name, std::string& rhs, cons
                 } else {
                     tmp.push_back(arrstr[i]);
                 }
+		if (tmp.size() > size) {
+			throw std::invalid_argument("Error: excess elements in array in line " + std::to_string(line) + ".");
+		}
+	    variables.intArr[name] = variables.intArr[rhs];
             }
             variables.charArr[name] = arr;
         } else if (type == "int") {
@@ -542,7 +537,10 @@ void Parser::arrRhs(std::string& type, std::string& name, std::string& rhs, cons
             while (strarr >> num) {
                 arr.push_back(num);
                 strarr >> skip;
-            }
+        	if (arr.size() > size) {
+			throw std::invalid_argument("Error: excess elements in array in line " + std::to_string(line) + ".");
+		}    
+		}
             variables.intArr[name] = arr;
             if (skip != '}') {
                 throw std::invalid_argument("The '}' is expected in line " + std::to_string(line) + ".");
@@ -615,7 +613,7 @@ void Parser::parsCout(const size_t line) {
         }
         
         // Print the value associated with "<<" operator
-        std::cout << getValue(code[line][count]);
+        std::cout << getValue(code[line][count]) << ' ';
         ++count;
     }
 }
@@ -637,7 +635,12 @@ std::string Parser::getValue(std::string& name) {
             std::string val = variables.strings[name].first;
 	    val = val.substr(1,val.size() - 2);
             return val;
-        }
+        } else if (type == "double") {
+		std::cout << variables.doubles[name].first << " ___________+_"<< std::endl;
+
+		double val = variables.doubles[name].first;
+		return std::to_string(val);
+	}
     } else {
         // It's an array element, retrieve the array and index
         std::pair<std::string, int> p = arrNamePars(name, variables);
@@ -659,5 +662,119 @@ std::string Parser::getValue(std::string& name) {
         }
     }
     // If none of the above conditions match, return the original name
+    if (name.front() == '"') {
+	name = name.substr(1, name.size() - 1);
+    }
+    if (name.back() == '"') {
+	name = name.substr(0, name.size() - 1);
+    }
+
     return name;
 }
+
+bool Parser::toBool(std::string& rhs, size_t line, Variables&  variables)
+{
+	std::string type2 = isDeclared(rhs);
+	bool val{};
+	if (type2 == "bool") {
+		val = variables.booleans[rhs].first;
+	} else if (rhs == "true" || rhs == "false") {
+		val = rhs == "true" ? true : false;
+	} else if (type2 == "int") {
+		val = variables.integers[rhs].first;
+	} else if (type2 == "double") {
+		val = variables.doubles[rhs].first;
+	} else {
+		try {
+			val = std::stoi(rhs);
+		} catch (const std::invalid_argument& e) {
+			throw std::invalid_argument("Conversion failed: invalid argument in line " + std::to_string(line) + ".");
+		}
+	}
+	return val;
+}
+
+char Parser::toChar(std::string& rhs, size_t line, Variables& variables)
+{
+	std::string type2 = isDeclared(rhs); 
+	char val{};
+	if (type2 == "int") {
+		val = variables.integers[rhs].first;
+	} else if (type2 == "char"){
+		val = variables.characters[rhs].first;
+	} else if (type2 == "bool") {
+		val = variables.characters[rhs].first;
+	} else if (rhs.size() == 3 && rhs[0] == '\'' &&  rhs[2] == '\'') {
+		val = rhs[1];
+	} else if (type2 == "double") {
+		val = variables.doubles[rhs].first;
+	} else {
+		try {
+			val = std::stoi(rhs);
+		} catch (const std::invalid_argument& e) {
+			throw std::invalid_argument("Conversion failed: invalid argument in line " + std::to_string(line) + ".");
+		}
+		val = std::stoi(rhs);
+	}
+	return val;
+}
+
+int Parser::toInt(std::string& rhs, const size_t line, Variables&  variables)
+{
+	std::string type2 = isDeclared(rhs); 
+	int val{};
+	if (type2 == "int") {
+		val = variables.integers[rhs].first;
+	} else if (type2 == "char"){
+		val = variables.characters[rhs].first;
+	} else if (type2 == "bool") {
+		val = variables.characters[rhs].first;
+	} else if (rhs.size() == 3 && rhs[0] == '\'' &&  rhs[2] == '\'') {
+		val = rhs[1];
+	}  else if (rhs == "true" || rhs == "false") {
+		val = rhs == "true" ? true : false;
+	} else if (type2 == "double") {
+		val = variables.doubles[rhs].first;
+	} else {
+		try {
+			val = std::stoi(rhs);
+		} catch (const std::invalid_argument& e) {
+			throw std::invalid_argument("Conversion failed: invalid argument in line " + std::to_string(line) + ".");
+		}
+	}
+	return val;
+}	
+
+double Parser::toDouble(std::string& rhs, const size_t line, Variables&  variables)
+{
+	std::string type2 = isDeclared(rhs); 
+	double val{};
+	if (type2 == "double") {
+		val = variables.doubles[rhs].first;	
+	} else if (type2 == "int") {
+		val = variables.integers[rhs].first;
+	} else if (type2 == "char"){
+		val = variables.characters[rhs].first;
+	} else if (type2 == "bool") {
+		val = variables.characters[rhs].first;
+	} else if (rhs.size() == 3 && rhs[0] == '\'' &&  rhs[2] == '\'') {
+		val = rhs[1];
+	}  else if (rhs == "true" || rhs == "false") {
+		val = rhs == "true" ? true : false;
+	} else {
+		try {
+			val = std::stod(rhs);
+		} catch (const std::invalid_argument& e) {
+			throw std::invalid_argument("Conversion failed: invalid argument in line " + std::to_string(line) + ".");
+		}
+	}
+	return val;
+}	
+
+
+
+
+
+
+
+
