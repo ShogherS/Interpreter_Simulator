@@ -17,7 +17,7 @@ Code Loading: The program can load code from a text file, allowing you to analyz
 
 Step-by-Step Parsing: It parses the loaded code step by step, simulating an interpreter's execution, and checks for errors and issues during the process.
 
-Variable Declaration: The program detects and handles variable declarations for various data types, including bool, int, char, string, ans arrays of char and int.
+Variable Declaration: The program detects and handles variable declarations for various data types, including bool, int, char, double, float, string, ans arrays of char, int, double and float.
 
 Operations: It supports various operations like =, +=, and -= for different data types.
 
@@ -25,7 +25,7 @@ Array Support: The program can handle array declarations and operations, includi
 
 Conditional Statements: It can process conditional statements like if and while, simulating their execution based on given conditions.
 
-Output: The program can simulate basic output operations, including std::cout.
+Output: The program can simulate basic output operations, including std::cout, std::cin.
 
 Error Handling: It provides detailed error messages and validation checks for various aspects of the code, helping users identify and correct issues.
 
@@ -53,11 +53,6 @@ int main() {
 ```
 
 2. The next step is to download all files of the current repository to your computer. Clone or download the program's source code to your local machine.
-	loader.h
-	parser.h
-	parser.cpp
-	init.h
-	variables.h
 
 4. The next step is to crete a .cpp file and include loader.h and parser.cpp files. Open a terminal or command prompt and navigate to the directory containing the program's source code. Aftervards you need to creale an instance of Loader class, it has a constructor with a string as a parameter. Its main role is to load the text file that with the code and sawe it. Next the Parser clss steps in, it also has a constructor with a parameter and a method pars which compiles the ocde. And at last you can chek the status of all the delatred vairables in your code calling the print method.
 
@@ -66,16 +61,25 @@ int main() {
 #include "parser.cpp
 int main()
 {
-	Loader loader("code.txt");
-	Parser parser(loader.code);
-	parser.pars();
+          std::string fileName;
+          std::cout << "Enter the name if the file with the code" << std::endl;
+          std::getline(std::cin, fileName);
+          Loader loader(fileName);
+          Parser parser(loader.code);
+          parser.pars();
 }
 ```
-4. Compile the program using your C++ compiler.
+4. Compile the program using your C++ compiler. The c++ 20 standard is required for this code to run
+```
+	g++ -std=c++20 main.cpp
+```
 
 5. Run the program, providing the name of the text file containing your code as a command-line argument. Once the program is running, it will load and parse the code step by step, simulating the execution. You will see output and error messages in the terminal, helping you understand how the code is being processed.
-
-
+```
+	./a.out
+	Enter the name if the file with the code
+	code.txt
+```
 
 ## Structure
 
