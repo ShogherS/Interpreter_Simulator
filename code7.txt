@@ -1,0 +1,14 @@
+#include <iostream>
+
+int main() {
+	float f = 4.56;
+	float farr[3] = {12.34,56.78,90.01};
+	string myStr = "float";
+	std::cout << myString << std::endl;;
+	int i = 0;
+	std::cin >> i;
+	while (i < 3) {
+		std::cout << farr[i] ;
+		i++;
+	}
+} 

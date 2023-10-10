@@ -1,0 +1,14 @@
+#include <iostream>
+
+int main() {
+	bool b = true;
+	int i = -7;
+	float f = 4.56;
+	int iarr[5] = {-12,34,-56,78,90};
+	i = iarr[0];
+	f = iarr[2];
+	b = iarr[3];
+	++f;
+	iarr[0] = 12.4;
+	iarr[2] = b;
+} 

@@ -1,24 +1,12 @@
 #include <iostream>
 
 int main() {
-	double a = 25.245;
-	++a;
-	std::cout << "Double: " << a << std::endl;
-	int i = a;
-	int j = 5;
-	bool b = j;
-	int sum = 0;
-	std::cout << b << std::endl;
-	while (i <= j) {
-		std::cout << sum << std::endl;
-		if (sum > 3) {
-			std::cout << "OK" << std::endl;
-		}
-		++sum;
-		++i;
-	}
-	if (-4 < true) {
-		std::cout << 4 << std::endl;
-	}
-	return 0;
+	double f = 65.56;
+	double d = 66.23;
+	int i = 67;
+	char charr[4] = {'a','b','c','o'};
+	charr[0] = f;
+	charr[1] = d;
+	charr[2] = i;
+	std::cin >> charr[3];
 } 
