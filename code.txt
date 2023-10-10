@@ -2,8 +2,8 @@
 
 int main() {
 	int i = 0;
-	int j = 5;
-	int arr[5] = {1,2,3,4,5};
+	int j = 5; 
+	int arr[5] = {1,2,3,4,5}; // Int array
 	while (i < j) {
 		if (i == 3) {
 			break;
