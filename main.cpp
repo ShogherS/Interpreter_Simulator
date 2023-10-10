@@ -3,11 +3,10 @@
 
 int main()
 {
-//	Loader loader("code4.txt");
-//	Loader loader("code3.txt");
-//	Loader loader("code2.txt");
-	Loader loader("code1.txt");
-//	Loader loader("code.txt");
+	std::string fileName;
+	std::cout << "Enter the name if the file with the code" << std::endl;
+	std::getline(std::cin, fileName);
+	Loader loader(fileName);
 	Parser parser(loader.code);
 	parser.pars();
 }

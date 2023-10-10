@@ -32,6 +32,9 @@ struct Variables
     
     // Maps for storing integer arrays (vectors) with their names as keys.
     std::map<std::string, std::vector<int>> intArr;
+
+    // Maps for storing double arrays (vectors) with their names as keys.
+    std::map<std::string, std::vector<double>> doubleArr;
 };
 
 #endif // VARIABLES_H

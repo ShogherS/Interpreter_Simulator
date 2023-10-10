@@ -39,6 +39,8 @@ std::string isDeclared(const std::string& key, Variables& variables) {
         return "charArr"; // Return "charArr" if it's a character array
     } else if (variables.intArr.contains(key)) {
         return "intArr"; // Return "intArr" if it's an integer array
+    } else if (variables.doubleArr.contains(key)) {
+        return "doubleArr"; // Return "intArr" if it's an integer array
     } else if (key.back() == ']') {
 	std::string key1 = key;
 	std::pair<std::string, size_t> value = arrNamePars(key1, variables);
@@ -47,13 +49,15 @@ std::string isDeclared(const std::string& key, Variables& variables) {
         		return "charArr"; // Return "charArr" if it's a character array
     		} else if (variables.intArr.contains(key1)) {
         		return "intArr"; // Return "intArr" if it's an integer array
-    		}
+    		} else if (variables.doubleArr.contains(key1)) {
+        		return "doubleArr"; // Return "intArr" if it's an integer array
+		}
 	}
     // If the variable identifier 'key' is not found in any map, return "NO" to indicate it's not declared.
     return "NO";
 }
 
-bool toBool(std::string& rhs, size_t line, Variables&  variables)
+bool toBool(std::string rhs, size_t line, Variables&  variables)
 {
 	std::string type2 = isDeclared(rhs, variables);
 	bool val{};
@@ -72,7 +76,10 @@ bool toBool(std::string& rhs, size_t line, Variables&  variables)
 			val = variables.charArr[arrInfo.first][arrInfo.second];
 		} else if (type == "intArr") {
 			val = variables.intArr[arrInfo.first][arrInfo.second];
+		} else if (type == "doubleArr") {
+			val = variables.doubleArr[arrInfo.first][arrInfo.second];
 		}
+
 	} else {
 		try {
 			val = std::stoi(rhs);
@@ -83,7 +90,7 @@ bool toBool(std::string& rhs, size_t line, Variables&  variables)
 	return val;
 }
 
-char toChar(std::string& rhs, size_t line, Variables& variables)
+char toChar(std::string rhs, size_t line, Variables& variables)
 {
 	std::string type2 = isDeclared(rhs, variables); 
 	char val{};
@@ -92,9 +99,9 @@ char toChar(std::string& rhs, size_t line, Variables& variables)
 	} else if (type2 == "char"){
 		val = variables.characters[rhs].first;
 	} else if (type2 == "bool") {
-		val = variables.characters[rhs].first;
+		val = variables.booleans[rhs].first;
 	} else if (type2 == "double") {
-		val = variables.characters[rhs].first;
+		val = variables.doubles[rhs].first;
 	} else if (rhs.size() == 3 && rhs[0] == '\'' &&  rhs[2] == '\'') {
 		val = rhs[1];
 	} else if (rhs.back() == ']') {
@@ -104,6 +111,8 @@ char toChar(std::string& rhs, size_t line, Variables& variables)
 			val = variables.charArr[arrInfo.first][arrInfo.second];
 		} else if (type == "intArr") {
 			val = variables.intArr[arrInfo.first][arrInfo.second];
+		} else if (type == "doubleArr") {
+			val = variables.doubleArr[arrInfo.first][arrInfo.second];
 		}
 	} else {
 		try {
@@ -116,7 +125,7 @@ char toChar(std::string& rhs, size_t line, Variables& variables)
 	return val;
 }
 
-int toInt(std::string& rhs, const size_t line, Variables&  variables)
+int toInt(std::string rhs, const size_t line, Variables&  variables)
 {
 	std::string type2 = isDeclared(rhs, variables); 
 	int val{};
@@ -139,7 +148,10 @@ int toInt(std::string& rhs, const size_t line, Variables&  variables)
 			val = variables.charArr[arrInfo.first][arrInfo.second];
 		} else if (type == "intArr") {
 			val = variables.intArr[arrInfo.first][arrInfo.second];
+		} else if (type == "doubleArr") {
+			val = variables.doubleArr[arrInfo.first][arrInfo.second];
 		}
+
 	} else {
 		try {
 			val = std::stoi(rhs);
@@ -150,7 +162,7 @@ int toInt(std::string& rhs, const size_t line, Variables&  variables)
 	}
 	return val;
 }
-double toDouble(std::string& rhs, const size_t line, Variables&  variables)
+double toDouble(std::string rhs, const size_t line, Variables&  variables)
 {
 	std::string type2 = isDeclared(rhs, variables); 
 	double val{};
@@ -173,7 +185,10 @@ double toDouble(std::string& rhs, const size_t line, Variables&  variables)
 			val = variables.charArr[arrInfo.first][arrInfo.second];
 		} else if (type == "intArr") {
 			val = variables.intArr[arrInfo.first][arrInfo.second];
+		} else if (type == "doubleArr") {
+			val = variables.doubleArr[arrInfo.first][arrInfo.second];
 		}
+
 	} else {
 		try {
 			val = std::stoi(rhs);

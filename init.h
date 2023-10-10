@@ -23,7 +23,7 @@ struct Init
 				variables.integers[line[0]].first = toInt(line[i], 111, variables);
 			} else if (type == "char") {
 				variables.characters[line[0]].first = toChar(line[i], 111, variables);
-			} else if (type == "double") {
+			} else if (type == "double" || type == "float") {
 				variables.doubles[line[0]].first = toDouble(line[i], 111, variables);
 			} else if (type == "string") {
 				std::string& value = variables.strings[line[0]].first;
@@ -46,7 +46,11 @@ struct Init
 			} else if (type == "charArr") {
 				std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
 				variables.charArr[value.first][value.second] = toChar(line[2], 111, variables);
+			} else if (type == "doubleArr") {
+				std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
+				variables.doubleArr[value.first][value.second] = toDouble(line[2], 111, variables);
 			}
+
 			++i;
 			// Check for the semicolon to complete the statement
 			if (i >= line.size() || line[i] != ";") {
@@ -63,7 +67,7 @@ struct Init
 			variables.integers[line[0]].first += toInt(line[2], 222, variables);
 		} else if (type == "char") {
 			variables.characters[line[0]].first += toInt(line[2], 222, variables);
-		} else if (type == "double") {
+		} else if (type == "double" || type == "float") {
 			variables.doubles[line[0]].first += toDouble(line[2], 222, variables);
 		} else if (type == "string") {
 			std::string& value = variables.strings[line[0]].first;
@@ -84,7 +88,10 @@ struct Init
 		} else if (type == "charArr") {
 				std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
 				variables.charArr[value.first][value.second] += toChar(line[2], 111, variables);
-			}
+		} else if (type == "doubleArr") {
+				std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
+				variables.doubleArr[value.first][value.second] += toDouble(line[2], 111, variables);
+		}
 		++i;
 	        // Check for the semicolon to complete the statement
 
@@ -103,7 +110,7 @@ struct Init
 			variables.integers[line[0]].first -= toInt(line[i], 333, variables);
 		} else if (type == "char") {
 			variables.characters[line[0]].first -= toInt(line[i], 333, variables);
-		} else if (type == "double") {
+		} else if (type == "double" || type == "float") {
 			variables.doubles[line[0]].first -= toDouble(line[i], 333, variables);
 		} else if (type == "string") {
 			throw std::invalid_argument("Invalid operation.  -= for type string.");
@@ -113,6 +120,9 @@ struct Init
 		} else if (type == "charArr") {
 				std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
 				variables.charArr[value.first][value.second] = toChar(line[2], 111, variables);
+		} else if (type == "doubleArr") {
+				std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
+				variables.doubleArr[value.first][value.second] = toDouble(line[2], 111, variables);
 		}
 		++i;
 		// Check for the semicolon to complete the statement
@@ -127,17 +137,21 @@ struct Init
 			++variables.integers[line[0]].first;
 		} else if (type == "char") {
 			++variables.characters[line[0]].first;
-		} else if (type == "double") {
+		} else if (type == "double" || type == "float") {
 			++variables.doubles[line[0]].first;
 		} else if (type == "string") {
 			throw std::invalid_argument("Invalid operation.  -= for type string.");
 		} else if (type == "intArr") {
 			std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
-			variables.intArr[value.first][value.second] = toInt(line[2], 111, variables);
+			++variables.intArr[value.first][value.second];
 		} else if (type == "charArr") {
 			std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
-			variables.charArr[value.first][value.second] = toChar(line[2], 111, variables);
+			++variables.charArr[value.first][value.second];
+		} else if (type == "doubleArr") {
+			std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
+			++variables.doubleArr[value.first][value.second];
 		}
+
 		if ( 2 >= line.size() || line[2] != ";") {
 			throw std::invalid_argument("Unknown symbole \"" + line[2]+ "\".");
 		}
@@ -155,11 +169,18 @@ struct Init
 			throw std::invalid_argument("Invalid operation.  -= for type string.");
 		} else if (type == "intArr") {
 			std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
-			variables.intArr[value.first][value.second] = toInt(line[2], 111, variables);
+			--variables.intArr[value.first][value.second];
 		} else if (type == "charArr") {
 			std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
-			variables.charArr[value.first][value.second] = toChar(line[2], 111, variables);
+			--variables.charArr[value.first][value.second];
+		} else if (type == "charArr") {
+			std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
+			--variables.charArr[value.first][value.second];
+		} else if (type == "doubleArr") {
+			std::pair<std::string, size_t> value = arrNamePars(line[0], variables);
+			--variables.doubleArr[value.first][value.second];
 		}
+
 		if ( 2 >= line.size() || line[2] != ";") {
 			throw std::invalid_argument("Unknown symbole \"" + line[2]+ "\".");
 		}
@@ -173,7 +194,9 @@ struct Init
 			double lhs = variables.doubles[argument1].first;
 			double rhs = toDouble(argument2, 444, variables);
 			return lhs == rhs;
-
+		} else if (type == "doubleArr") {
+			double lhs = toDouble(argument1, 444, variables);
+			double rhs = toDouble(argument2, 444, variables);
 		} else if (type == "string") {
 			std::string& value = variables.strings[argument1].first;
 			if (type2 == "string") {
@@ -197,6 +220,10 @@ struct Init
 			double lhs = variables.doubles[argument1].first;
 			double rhs = toDouble(argument2, 444, variables);
 			return lhs != rhs;
+		} else if (type == "doubleArr") {
+			double lhs = toDouble(argument1, 444, variables);
+			double rhs = toDouble(argument2, 444, variables);
+			return lhs != rhs;
 		} else if (type == "string") {
 			std::string& value = variables.strings[argument1].first;
 			if (type2 == "string") {
@@ -217,8 +244,8 @@ struct Init
 		std::string type = isDeclared(variables, argument1);
 		std::string type2 = isDeclared(variables, argument2);
 		bool result{};
-		if (type == "double") {
-			double lhs = variables.doubles[argument1].first;
+		if (type == "double" || type == "doubleArr") {
+			double lhs = toDouble(argument2, 444, variables);
 			double rhs = toDouble(argument2, 444, variables);
 			return lhs < rhs;
 		} else if (type == "string" || type2 == "string") {
@@ -232,8 +259,8 @@ struct Init
 	{">", [this](std::string& argument1, std::string& argument2, Variables& variables) -> bool {
 		std::string type = isDeclared(variables, argument1);
 		std::string type2 = isDeclared(variables, argument2);
-		if (type == "double") {
-			double lhs = variables.doubles[argument1].first;
+		if (type == "double" || type == "doubleArr") {
+			double lhs = toDouble(argument1, 444, variables);
 			double rhs = toDouble(argument2, 444, variables);
 			return lhs > rhs;
 		} else if (type == "string" || type2 == "string") {
@@ -249,8 +276,8 @@ struct Init
 		std::string type = isDeclared(variables, argument1);
 		std::string type2 = isDeclared(variables, argument2);
 		bool result{};
-		if (type == "double") {
-			double lhs = variables.doubles[argument1].first;
+		if (type == "double" || type == "doubleArr") {
+			double lhs = toDouble(argument1, 444, variables);
 			double rhs = toDouble(argument2, 444, variables);
 			return lhs <= rhs;
 		} else if (type == "string" || type2 == "string") {
@@ -264,8 +291,8 @@ struct Init
 	{">=", [this](std::string& argument1, std::string& argument2, Variables& variables) -> bool {
 		std::string type = isDeclared(variables, argument1);
 		std::string type2 = isDeclared(variables, argument2);
-		if (type == "double") {
-			double lhs = variables.doubles[argument1].first;
+		if (type == "double" || type == "doubleArr") {
+			double lhs = toDouble(argument1, 444, variables);
 			double rhs = toDouble(argument2, 444, variables);
 			return lhs >= rhs;
 		} else if (type == "string" || type2 == "string") {
