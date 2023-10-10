@@ -49,6 +49,4 @@ void Parser::pars() {
     for (size_t i{}; i < code.size() - ioFlag; ++i) {
         variableParser(i, variables); // Parse and process variables.
     }
-
-    print(); // Print the results.
 }
